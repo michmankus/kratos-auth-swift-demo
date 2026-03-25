@@ -66,4 +66,8 @@ public enum UiNodeAttributes: Sendable, Codable, Hashable {
 }
 
 
-extension UiNodeAttributes: Identifiable {}
+extension UiNodeAttributes: Identifiable {
+    public var id: Self {
+        self
+    }
+}

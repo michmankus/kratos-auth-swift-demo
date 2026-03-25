@@ -5,6 +5,7 @@
 //  Created by Michal Mańkus on 25/03/2026.
 //
 
+import OryAuth
 import SwiftUI
 
 struct ContentView: View {
@@ -14,6 +15,7 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            Text("Ory Auth version: \(OryAuth.version)")
         }
         .padding()
     }
