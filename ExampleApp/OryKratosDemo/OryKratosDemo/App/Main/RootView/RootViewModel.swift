@@ -27,8 +27,12 @@ final class RootViewModel: Sendable, ObservableObject {
     
     // MARK: - Methods
     
-    public func onTask() async {
+    func onTask() async {
         await loadInitialState()
+    }
+    
+    func onWelcomeJourneyCompletion() {
+        appState = .loggedIn
     }
     
     // MARK: - Initial state loading

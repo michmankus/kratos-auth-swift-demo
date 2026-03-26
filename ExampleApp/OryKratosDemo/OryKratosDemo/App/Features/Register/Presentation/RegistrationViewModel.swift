@@ -22,13 +22,16 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     
     private let repository: AuthRepository
     private let onRegistrationSuccess: ValueClosure<OrySession>
+    private let onDismiss: Closure
 
     init(
         repository: AuthRepository,
-        onRegistrationSuccess: @escaping ValueClosure<OrySession>
+        onRegistrationSuccess: @escaping ValueClosure<OrySession>,
+        onDismiss: @escaping Closure
     ) {
         self.repository = repository
         self.onRegistrationSuccess = onRegistrationSuccess
+        self.onDismiss = onDismiss
     }
 
     func loadFlow() async {
@@ -74,6 +77,10 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
         }
 
         isLoading = false
+    }
+    
+    func dismiss() {
+        onDismiss()
     }
 
     // MARK: - Private
@@ -123,6 +130,8 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     }
 }
 
+#if DEBUG
+
 // MARK: - Fixture
 
 final class RegistrationViewModelFixture: RegistrationViewModelProtocol {
@@ -135,6 +144,7 @@ final class RegistrationViewModelFixture: RegistrationViewModelProtocol {
 
     func loadFlow() async {}
     func submit() async {}
+    func dismiss() {}
 
     static var withFlow: RegistrationViewModelFixture {
         let fixture = RegistrationViewModelFixture()
@@ -185,3 +195,5 @@ final class RegistrationViewModelFixture: RegistrationViewModelProtocol {
         return fixture
     }
 }
+
+#endif

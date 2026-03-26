@@ -51,6 +51,12 @@ struct RootView<ViewModel>: View where ViewModel: RootViewModel {
     }
     
     private var welcomeJourney: some View {
-        Text("login / register")
+        WelcomeJourneyCoordinatorView(
+            coordinator: WelcomeJourneyCoordinator(
+                onComplete: {
+                    viewModel.onWelcomeJourneyCompletion()
+                }
+            )
+        )
     }
 }

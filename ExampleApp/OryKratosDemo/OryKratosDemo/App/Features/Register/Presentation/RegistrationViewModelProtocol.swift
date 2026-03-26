@@ -18,4 +18,5 @@ protocol RegistrationViewModelProtocol: ObservableObject, Sendable {
 
     func loadFlow() async
     func submit() async
+    func dismiss()
 }

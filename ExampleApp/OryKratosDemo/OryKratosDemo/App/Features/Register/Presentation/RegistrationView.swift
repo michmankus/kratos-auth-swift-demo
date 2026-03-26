@@ -26,8 +26,23 @@ struct RegistrationView<ViewModel: RegistrationViewModelProtocol>: View {
             }
         }
         .navigationTitle("Register")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                dismissButton
+            }
+        }
         .overlay { loadingOverlay }
         .task { await viewModel.loadFlow() }
+    }
+    
+    private var dismissButton: some View {
+        Button(
+            action: {
+                viewModel.dismiss()
+            }, label: {
+                Image(systemName: "xmark")
+            }
+        )
     }
 
     // MARK: - Sections
@@ -101,8 +116,12 @@ struct RegistrationView<ViewModel: RegistrationViewModelProtocol>: View {
     }
 }
 
+#if DEBUG
+
 #Preview {
     NavigationStack {
         RegistrationView(viewModel: RegistrationViewModelFixture.withFlow)
     }
 }
+
+#endif
