@@ -16,13 +16,15 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(name: "OryClient", path: "Dependencies/OryClient")
+        .package(name: "OryClient", path: "Dependencies/OryClient"),
+        .package(name: "SecureStorage", path: "Dependencies/SecureStorage")
     ],
     targets: [
         .target(
             name: "OryAuth",
             dependencies: [
-                "OryClient"
+                "OryClient",
+                "SecureStorage"
             ]
         ),
         .testTarget(

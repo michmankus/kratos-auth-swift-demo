@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -6,7 +6,8 @@ let package = Package(
     name: "SecureStorage",
     defaultLocalization: .init(stringLiteral: "en"),
     platforms: [
-        .iOS(.v26)
+        .iOS(.v16),
+        .macOS(.v13),
     ],
     products: [
         .library(
