@@ -45,6 +45,12 @@ public enum OryError: Error, Sendable {
     /// Authentication is required but no valid session exists (HTTP 401).
     case unauthorized
 
+    /// The server returned a success response but the session token was missing.
+    ///
+    /// This is unexpected for native API flows and may indicate a server
+    /// misconfiguration or an incompatible Ory project setup.
+    case missingSessionToken
+
     /// An unexpected server error occurred.
     case unknown(statusCode: Int, message: String?)
 }

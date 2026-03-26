@@ -97,14 +97,11 @@ public final class OryAuthClient: Sendable {
                 apiConfiguration: apiConfig
             )
 
-            if let token = result.sessionToken {
-                try? await tokenStorage.saveToken(token)
+            guard let token = result.sessionToken else {
+                throw OryError.missingSessionToken
             }
 
-            return OrySession.from(
-                session: result.session,
-                token: result.sessionToken ?? ""
-            )
+            return try await storeAndBuildSession(token: token, session: result.session)
         } catch {
             throw OryError.map(from: error, flowType: .login)
         }
@@ -130,18 +127,19 @@ public final class OryAuthClient: Sendable {
 
     /// Submit registration data for a given flow.
     ///
-    /// On success, the session token is automatically stored in the Keychain
-    /// if auto-login is enabled on the Ory project.
+    /// Registration may or may not produce an active session, depending on
+    /// whether email verification is required in your Ory project.
     ///
     /// - Parameters:
     ///   - flowId: The flow ID from `FlowContainer.id`.
     ///   - credentials: Type-safe credentials for registration.
-    /// - Returns: The authenticated `OrySession`.
+    /// - Returns: A ``RegistrationResult`` — either `.session` (authenticated)
+    ///   or `.pendingVerification` (needs email confirmation).
     /// - Throws: `OryError` if registration fails.
     public func submitRegistration(
         flowId: String,
         credentials: RegistrationCredentials
-    ) async throws -> OrySession {
+    ) async throws -> RegistrationResult {
         let body = credentials.toUpdateBody()
 
         do {
@@ -152,25 +150,14 @@ public final class OryAuthClient: Sendable {
                 apiConfiguration: apiConfig
             )
 
-            if let token = result.sessionToken {
-                try? await tokenStorage.saveToken(token)
+            // If a session token is returned, the user is immediately authenticated
+            if let token = result.sessionToken, let session = result.session {
+                let orySession = try await storeAndBuildSession(token: token, session: session)
+                return .session(orySession)
             }
 
-            let session = result.session
-            let token = result.sessionToken ?? ""
-
-            if let session {
-                return OrySession.from(session: session, token: token)
-            }
-
-            return OrySession(
-                id: "",
-                token: token,
-                identity: OryIdentity.from(result.identity),
-                expiresAt: nil,
-                authenticatedAt: nil,
-                isActive: false
-            )
+            // No session → verification is required before login
+            return .pendingVerification(identity: OryIdentity.from(result.identity))
         } catch {
             throw OryError.map(from: error, flowType: .registration)
         }
@@ -238,6 +225,20 @@ public final class OryAuthClient: Sendable {
         get async {
             await tokenStorage.loadToken() != nil
         }
+    }
+
+    // MARK: - Private Helpers
+
+    /// Store the session token in the Keychain and build an `OrySession`.
+    ///
+    /// Single responsibility: persists the token and converts the generated
+    /// `Session` into our public `OrySession`. Used by both login and registration.
+    private func storeAndBuildSession(
+        token: String,
+        session: OryClient.Session
+    ) async throws -> OrySession {
+        try await tokenStorage.saveToken(token)
+        return OrySession.from(session: session, token: token)
     }
 }
 

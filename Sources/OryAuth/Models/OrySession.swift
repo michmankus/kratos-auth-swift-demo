@@ -85,6 +85,23 @@ public struct OryIdentity: Sendable {
     }
 }
 
+// MARK: - RegistrationResult
+
+/// The outcome of a successful registration submission.
+///
+/// Registration may or may not produce an active session, depending on
+/// whether email verification is required in your Ory project configuration.
+public enum RegistrationResult: Sendable {
+
+    /// Registration succeeded and the user is immediately authenticated.
+    /// This happens when email verification is disabled or optional.
+    case session(OrySession)
+
+    /// Registration succeeded but the user must verify their email/phone
+    /// before a session is created. Show a verification prompt in your UI.
+    case pendingVerification(identity: OryIdentity)
+}
+
 // MARK: - Internal Parsing
 
 extension OrySession {
