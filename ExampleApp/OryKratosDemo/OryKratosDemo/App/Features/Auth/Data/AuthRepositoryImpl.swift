@@ -13,7 +13,7 @@ import OryAuth
 /// The presentation layer never touches it directly.
 actor AuthRepositoryImpl: AuthRepository {
 
-    private let client: OryAuthClient
+    private let client: any OryAuthClientProtocol
     private(set) var currentSession: OrySession?
     
     var hasActiveSession: Bool {
@@ -24,7 +24,7 @@ actor AuthRepositoryImpl: AuthRepository {
         return true
     }
 
-    init(client: OryAuthClient) {
+    init(client: any OryAuthClientProtocol) {
         self.client = client
     }
 
@@ -51,7 +51,7 @@ actor AuthRepositoryImpl: AuthRepository {
             print("debug: Successfully loaded session: \(session)")
             currentSession = session
             return session
-        } catch {
+        } catch let error as OryError {
             switch error {
             case .missingSessionToken:
                 print("debug: No session token stored, loadSession() failed")
@@ -60,6 +60,9 @@ actor AuthRepositoryImpl: AuthRepository {
             default:
                 print("debug: getSession() failed with other error: \(error)")
             }
+            currentSession = nil
+            throw error
+        } catch {
             currentSession = nil
             throw error
         }

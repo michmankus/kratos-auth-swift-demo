@@ -30,7 +30,7 @@ import SecureStorage
 ///     credentials: .password(identifier: "user@example.com", password: "s3cret")
 /// )
 /// ```
-public final class OryAuthClient: Sendable {
+public final class OryAuthClient: OryAuthClientProtocol {
 
     private let configuration: OryConfiguration
     private let tokenStorage: TokenStorage
@@ -173,7 +173,7 @@ public final class OryAuthClient: Sendable {
     ///
     /// - Returns: The current `OrySession`,
     /// - Throws: `OryError` if fails to retrieve session.
-    public func loadSession() async throws(OryError) -> OrySession {
+    public func loadSession() async throws -> OrySession {
         guard let token = await tokenStorage.loadToken() else {
             throw OryError.missingSessionToken
         }
@@ -244,48 +244,3 @@ public final class OryAuthClient: Sendable {
     }
 }
 
-// MARK: - Credential → OryClient Body Conversion
-
-extension LoginCredentials {
-
-    /// Convert type-safe credentials to the generated OryClient body type.
-    func toUpdateBody() -> UpdateLoginFlowBody {
-        switch self {
-        case .password(let identifier, let password):
-            let body = UpdateLoginFlowWithPasswordMethod(
-                identifier: identifier,
-                method: "password",
-                password: password
-            )
-            return .typeUpdateLoginFlowWithPasswordMethod(body)
-
-        case .passkey(let response):
-            let body = UpdateLoginFlowWithPasskeyMethod(
-                method: "passkey",
-                passkeyLogin: response
-            )
-            return .typeUpdateLoginFlowWithPasskeyMethod(body)
-        }
-    }
-}
-
-extension RegistrationCredentials {
-
-    /// Convert type-safe credentials to the generated OryClient body type.
-    func toUpdateBody() -> UpdateRegistrationFlowBody {
-        switch self {
-        case .password(let password, let traits):
-            var traitsDict: [String: JSONValue] = [:]
-            for (key, value) in traits {
-                traitsDict[key] = .string(value)
-            }
-
-            let body = UpdateRegistrationFlowWithPasswordMethod(
-                method: "password",
-                password: password,
-                traits: .dictionary(traitsDict)
-            )
-            return .typeUpdateRegistrationFlowWithPasswordMethod(body)
-        }
-    }
-}
