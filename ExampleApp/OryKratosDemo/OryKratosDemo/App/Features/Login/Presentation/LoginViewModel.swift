@@ -5,39 +5,30 @@
 //  Created by Michal Mańkus on 26/03/2026.
 //
 
+import Combine
 import OryAuth
 import SwiftUI
 
-// MARK: - Protocol
-
-@MainActor
-protocol LoginViewModelProtocol: Observable, AnyObject {
-    var flow: FlowContainer? { get }
-    var fieldValues: [String: String] { get set }
-    var isLoading: Bool { get }
-    var errorMessage: String? { get }
-
-    func loadFlow() async
-    func submit() async
-}
-
-// MARK: - Implementation
-
-@Observable
-@MainActor
 final class LoginViewModel: LoginViewModelProtocol {
 
-    private(set) var flow: FlowContainer?
+    @Published private(set) var flow: FlowContainer?
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage: String?
+    
     var fieldValues: [String: String] = [:]
-    private(set) var isLoading = false
-    private(set) var errorMessage: String?
 
     private let repository: AuthRepository
-    private let onLoginSuccess: (OrySession) -> Void
+    private let onLoginSuccess: ValueClosure<OrySession>
+    private let onDismiss: Closure
 
-    init(repository: AuthRepository, onLoginSuccess: @escaping (OrySession) -> Void) {
+    init(
+        repository: AuthRepository,
+        onLoginSuccess: @escaping ValueClosure<OrySession>,
+        onDismiss: @escaping Closure
+    ) {
         self.repository = repository
         self.onLoginSuccess = onLoginSuccess
+        self.onDismiss = onDismiss
     }
 
     func loadFlow() async {
@@ -75,6 +66,10 @@ final class LoginViewModel: LoginViewModelProtocol {
         }
 
         isLoading = false
+    }
+    
+    func dismiss() {
+        onDismiss()
     }
 
     // MARK: - Private
@@ -117,10 +112,10 @@ final class LoginViewModel: LoginViewModelProtocol {
     }
 }
 
+#if DEBUG
+
 // MARK: - Fixture
 
-@Observable
-@MainActor
 final class LoginViewModelFixture: LoginViewModelProtocol {
 
     var flow: FlowContainer?
@@ -130,6 +125,7 @@ final class LoginViewModelFixture: LoginViewModelProtocol {
 
     func loadFlow() async {}
     func submit() async {}
+    func dismiss() {}
 
     static var withFlow: LoginViewModelFixture {
         let fixture = LoginViewModelFixture()
@@ -186,3 +182,5 @@ final class LoginViewModelFixture: LoginViewModelProtocol {
         return fixture
     }
 }
+
+#endif

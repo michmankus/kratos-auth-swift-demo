@@ -20,16 +20,16 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     
     var fieldValues: [String: String] = [:]
     
-    private let repository: AuthRepository
+    private let authRepository: AuthRepository
     private let onRegistrationSuccess: ValueClosure<OrySession>
     private let onDismiss: Closure
 
     init(
-        repository: AuthRepository,
+        authRepository: AuthRepository,
         onRegistrationSuccess: @escaping ValueClosure<OrySession>,
         onDismiss: @escaping Closure
     ) {
-        self.repository = repository
+        self.authRepository = authRepository
         self.onRegistrationSuccess = onRegistrationSuccess
         self.onDismiss = onDismiss
     }
@@ -39,7 +39,7 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
         errorMessage = nil
 
         do {
-            let container = try await repository.initRegistrationFlow()
+            let container = try await authRepository.initRegistrationFlow()
             flow = container
             prefillHiddenFields(from: container)
         } catch {
@@ -62,7 +62,7 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
                 password: fieldValues["password"] ?? "",
                 traits: traits
             )
-            let result = try await repository.submitRegistration(flowId: flow.id, credentials: credentials)
+            let result = try await authRepository.submitRegistration(flowId: flow.id, credentials: credentials)
 
             switch result {
             case .session(let session):

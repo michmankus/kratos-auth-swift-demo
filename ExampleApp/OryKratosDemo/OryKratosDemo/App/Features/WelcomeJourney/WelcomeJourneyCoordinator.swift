@@ -48,6 +48,10 @@ final class WelcomeJourneyCoordinator: CoordinatorProtocol {
     
     // MARK: - Actions
     
+    func didLogin() {
+        onComplete()
+    }
+    
     func didRegister() {
         onComplete()
     }

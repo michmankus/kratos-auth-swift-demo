@@ -8,12 +8,13 @@
 import OryAuth
 import SwiftUI
 
-/// Dynamically renders a login form from server-provided UI nodes.
-///
-/// No fields are hardcoded — the form adapts to whatever the Ory API returns.
 struct LoginView<ViewModel: LoginViewModelProtocol>: View {
-    @Bindable var viewModel: ViewModel
-    let onRegisterTap: () -> Void
+    
+    @StateObject private var viewModel: ViewModel
+    
+    init(viewModel: @autoclosure @escaping ReturnClosure<ViewModel>) {
+        _viewModel = .init(wrappedValue: viewModel())
+    }
 
     var body: some View {
         Form {
@@ -22,12 +23,25 @@ struct LoginView<ViewModel: LoginViewModelProtocol>: View {
                 inputFields(flow)
                 submitSection(flow)
             }
-
-            registrationLink
         }
         .navigationTitle("Sign In")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                dismissButton
+            }
+        }
         .overlay { loadingOverlay }
         .task { await viewModel.loadFlow() }
+    }
+    
+    private var dismissButton: some View {
+        Button(
+            action: {
+                viewModel.dismiss()
+            }, label: {
+                Image(systemName: "xmark")
+            }
+        )
     }
 
     // MARK: - Sections
@@ -74,14 +88,6 @@ struct LoginView<ViewModel: LoginViewModelProtocol>: View {
         }
     }
 
-    private var registrationLink: some View {
-        Section {
-            Button("Don't have an account? Register") {
-                onRegisterTap()
-            }
-        }
-    }
-
     @ViewBuilder
     private var loadingOverlay: some View {
         if viewModel.isLoading && viewModel.flow == nil {
@@ -102,8 +108,7 @@ struct LoginView<ViewModel: LoginViewModelProtocol>: View {
 #Preview("Login") {
     NavigationStack {
         LoginView(
-            viewModel: LoginViewModelFixture.withFlow,
-            onRegisterTap: {}
+            viewModel: LoginViewModelFixture.withFlow
         )
     }
 }
@@ -111,8 +116,7 @@ struct LoginView<ViewModel: LoginViewModelProtocol>: View {
 #Preview("Login with error") {
     NavigationStack {
         LoginView(
-            viewModel: LoginViewModelFixture.withError,
-            onRegisterTap: {}
+            viewModel: LoginViewModelFixture.withError
         )
     }
 }

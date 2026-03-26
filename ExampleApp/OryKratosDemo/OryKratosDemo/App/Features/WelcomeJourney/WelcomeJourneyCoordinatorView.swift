@@ -51,13 +51,24 @@ struct WelcomeJourneyCoordinatorView<Coordinator>: View where Coordinator: Welco
     // MARK: - Pages
     
     private var loginView: some View {
-        Text("Login")
+        LoginView(
+            viewModel: LoginViewModel(
+                repository: AppComponents.authRepository,
+                onLoginSuccess: { session in
+                    print("debug: login success")
+                    coordinator.didLogin()
+                },
+                onDismiss: {
+                    coordinator.dismiss()
+                }
+            )
+        )
     }
     
     private var registerView: some View {
         RegistrationView(
             viewModel: RegistrationViewModel(
-                repository: AppComponents.authRepository,
+                authRepository: AppComponents.authRepository,
                 onRegistrationSuccess: { session in
                     print("debug: registration success")
                     coordinator.didRegister()
