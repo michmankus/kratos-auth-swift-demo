@@ -48,6 +48,7 @@ final class AuthRepositoryImpl: AuthRepository {
     func loadSession() async throws -> OrySession {
         do {
             let session = try await client.loadSession()
+            print("debug: Successfully loaded session: \(session)")
             currentSession = session
             return session
         } catch {

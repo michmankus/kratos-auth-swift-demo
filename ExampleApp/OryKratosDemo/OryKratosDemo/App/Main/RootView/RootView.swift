@@ -47,7 +47,14 @@ struct RootView<ViewModel>: View where ViewModel: RootViewModel {
     }
     
     private var mainView: some View {
-        Text("main view")
+        ProfileView(
+            viewModel: ProfileViewModel(
+                authRepository: AppComponents.authRepository,
+                onLogout: {
+                    viewModel.logout()
+                }
+            )
+        )
     }
     
     private var welcomeJourney: some View {

@@ -31,6 +31,10 @@ final class RootViewModel: Sendable, ObservableObject {
         await loadInitialState()
     }
     
+    func logout() {
+        appState = .loggedOut
+    }
+    
     func onWelcomeJourneyCompletion() {
         appState = .loggedIn
     }

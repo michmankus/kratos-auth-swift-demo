@@ -8,35 +8,59 @@
 import OryAuth
 import SwiftUI
 
-/// Displays the authenticated user's profile information from the session.
 struct ProfileView<ViewModel: ProfileViewModelProtocol>: View {
-    @Bindable var viewModel: ViewModel
+    
+    @StateObject private var viewModel: ViewModel
+    
+    init(viewModel: @autoclosure @escaping ReturnClosure<ViewModel>) {
+        _viewModel = .init(wrappedValue: viewModel())
+    }
 
     var body: some View {
-        List {
-            sessionSection
-            traitsSection
-            logoutSection
+        VStack {
+            switch viewModel.state {
+            case .sessionLoaded(let orySession):
+                sessionInfoView(orySession)
+            case .sessionNotLoaded:
+                sessionNotLoadedView
+            }
         }
         .navigationTitle("Profile")
+        .task { await viewModel.onTask() }
+    }
+    
+    // MARK: - MainView
+    
+    private func sessionInfoView(_ session: OrySession) -> some View {
+        List {
+            sessionSection(session)
+            traitsSection(session)
+            logoutSection
+        }
+        
+    }
+    
+    private var sessionNotLoadedView: some View {
+        Text("Session not loaded")
+            .foregroundStyle(.secondary)
     }
 
     // MARK: - Sections
 
-    private var sessionSection: some View {
+    private func sessionSection(_ session: OrySession) -> some View {
         Section("Session") {
-            LabeledContent("Session ID", value: viewModel.session.id)
-            LabeledContent("Active", value: viewModel.session.isActive ? "Yes" : "No")
+            LabeledContent("Session ID", value: session.id)
+            LabeledContent("Active", value: session.isActive ? "Yes" : "No")
 
-            if let expiresAt = viewModel.session.expiresAt {
+            if let expiresAt = session.expiresAt {
                 LabeledContent("Expires", value: expiresAt.formatted())
             }
         }
     }
 
-    private var traitsSection: some View {
+    private func traitsSection(_ session: OrySession) -> some View {
         Section("Identity Traits") {
-            let traits = viewModel.session.identity.traits
+            let traits = session.identity.traits
 
             if traits.isEmpty {
                 Text("No traits available")
@@ -52,7 +76,9 @@ struct ProfileView<ViewModel: ProfileViewModelProtocol>: View {
     private var logoutSection: some View {
         Section {
             Button(role: .destructive) {
-                Task { await viewModel.logout() }
+                Task {
+                    await viewModel.logout()
+                }
             } label: {
                 HStack {
                     Spacer()
@@ -69,8 +95,12 @@ struct ProfileView<ViewModel: ProfileViewModelProtocol>: View {
     }
 }
 
+#if DEBUG
+
 #Preview {
     NavigationStack {
         ProfileView(viewModel: ProfileViewModelFixture())
     }
 }
+
+#endif
