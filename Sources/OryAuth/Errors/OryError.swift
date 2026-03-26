@@ -1,8 +1,8 @@
 //
-//  OryAuth.swift
+//  OryError.swift
 //  OrySwiftSDK
 //
-//  Created by Michal Mańkus on 25/03/2026.
+//  Created by Michal Mańkus on 26/03/2026.
 //
 
 import Foundation
@@ -14,23 +14,29 @@ import OryClient
 ///
 /// Clearly distinguishes between different error categories so app developers
 /// can handle each case appropriately:
-/// - Network failures → retry or show connectivity error
-/// - Validation errors → re-render the form with field-level messages
-/// - Expired flow → re-initialize the flow
-/// - Session conflicts → redirect to profile
-/// - Unknown errors → show generic error message
+///
+/// - `.network` → retry or show connectivity error
+/// - `.validation` → re-render the form with field-level messages
+/// - `.flowExpired` → re-initialize the flow
+/// - `.sessionAlreadyAvailable` → redirect to profile
+/// - `.unauthorized` → prompt login
+/// - `.unknown` → show generic server error message
 public enum OryError: Error, Sendable {
 
     /// A network-level error occurred (no connectivity, DNS failure, timeout, etc.).
     case network(underlying: Error)
 
     /// The server returned validation errors (HTTP 400).
-    /// The associated `FlowContainer` contains updated nodes with per-field error messages.
-    /// Re-render the form using this updated flow.
+    ///
+    /// The associated `FlowContainer` contains updated nodes with per-field
+    /// error messages. Re-render the form using this updated flow to show
+    /// the user what needs to be fixed.
     case validation(flow: FlowContainer)
 
     /// The flow has expired and must be re-initialized (HTTP 410).
-    /// If `newFlowId` is provided, you can fetch the replacement flow directly.
+    ///
+    /// If `newFlowId` is provided, you can fetch the replacement flow directly
+    /// instead of creating a brand new one.
     case flowExpired(newFlowId: String?)
 
     /// The user already has an active session (HTTP 400, `session_already_available`).
@@ -39,7 +45,7 @@ public enum OryError: Error, Sendable {
     /// Authentication is required but no valid session exists (HTTP 401).
     case unauthorized
 
-    /// An unexpected error occurred.
+    /// An unexpected server error occurred.
     case unknown(statusCode: Int, message: String?)
 }
 
@@ -47,11 +53,35 @@ public enum OryError: Error, Sendable {
 
 extension OryError {
 
-    /// Maps a generated `ErrorResponse` from OryClient into a typed `OryError`.
+    /// Maps any error thrown by the generated OryClient into a typed `OryError`.
     ///
-    /// The generated client throws `ErrorResponse.error(statusCode, data, response, underlyingError)`.
-    /// This method inspects the status code and response body to determine the specific error type.
-    static func map(from errorResponse: OryClient.ErrorResponse, flowType: FlowType = .login) -> OryError {
+    /// Handles both `ErrorResponse` from the generated client and generic
+    /// `Error` types (e.g. `URLError` for network failures).
+    static func map(from error: any Error, flowType: FlowType = .login) -> OryError {
+        // Check for generated client's ErrorResponse
+        if let errorResponse = error as? OryClient.ErrorResponse {
+            return mapErrorResponse(errorResponse, flowType: flowType)
+        }
+
+        // URLError → network error
+        if error is URLError {
+            return .network(underlying: error)
+        }
+
+        // Already an OryError (e.g. from body builder) — pass through
+        if let oryError = error as? OryError {
+            return oryError
+        }
+
+        // Unknown error type
+        return .network(underlying: error)
+    }
+
+    /// Maps a generated `ErrorResponse` from OryClient into a typed `OryError`.
+    private static func mapErrorResponse(
+        _ errorResponse: OryClient.ErrorResponse,
+        flowType: FlowType
+    ) -> OryError {
         guard case .error(let statusCode, let data, _, let underlyingError) = errorResponse else {
             return .unknown(statusCode: -1, message: "Unexpected error format")
         }
@@ -143,7 +173,7 @@ extension OryError {
 
 // MARK: - FlowType
 
-/// Identifies which type of flow is being processed, used for error mapping.
+/// Identifies which type of flow is being processed, used internally for error mapping.
 public enum FlowType: String, Sendable {
     case login
     case registration

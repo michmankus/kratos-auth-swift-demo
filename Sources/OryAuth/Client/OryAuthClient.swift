@@ -1,8 +1,8 @@
 //
-//  OryAuth.swift
+//  OryAuthClient.swift
 //  OrySwiftSDK
 //
-//  Created by Michal Mańkus on 25/03/2026.
+//  Created by Michal Mańkus on 26/03/2026.
 //
 
 import Foundation
@@ -27,7 +27,7 @@ import SecureStorage
 ///
 /// let session = try await client.submitLogin(
 ///     flowId: flow.id,
-///     values: ["identifier": "user@example.com", "password": "secret", "method": "password"]
+///     credentials: .password(identifier: "user@example.com", password: "s3cret")
 /// )
 /// ```
 public final class OryAuthClient: Sendable {
@@ -74,17 +74,18 @@ public final class OryAuthClient: Sendable {
 
     /// Submit login credentials for a given flow.
     ///
-    /// Collects field values from the UI and submits them to the Ory Kratos API.
     /// On success, the session token is automatically stored in the Keychain.
     ///
     /// - Parameters:
     ///   - flowId: The flow ID from `FlowContainer.id`.
-    ///   - values: A dictionary of field name → value pairs. Must include a `"method"` key
-    ///             (e.g. `"password"`, `"passkey"`).
+    ///   - credentials: Type-safe credentials for the chosen auth method.
     /// - Returns: The authenticated `OrySession`.
     /// - Throws: `OryError` if login fails (validation, expired flow, network, etc.).
-    public func submitLogin(flowId: String, values: [String: String]) async throws -> OrySession {
-        let body = try buildLoginBody(from: values)
+    public func submitLogin(
+        flowId: String,
+        credentials: LoginCredentials
+    ) async throws -> OrySession {
+        let body = credentials.toUpdateBody()
 
         do {
             let apiConfig = configuration.makeAPIConfiguration()
@@ -96,7 +97,6 @@ public final class OryAuthClient: Sendable {
                 apiConfiguration: apiConfig
             )
 
-            // Store session token securely
             if let token = result.sessionToken {
                 try? await tokenStorage.saveToken(token)
             }
@@ -130,24 +130,28 @@ public final class OryAuthClient: Sendable {
 
     /// Submit registration data for a given flow.
     ///
+    /// On success, the session token is automatically stored in the Keychain
+    /// if auto-login is enabled on the Ory project.
+    ///
     /// - Parameters:
     ///   - flowId: The flow ID from `FlowContainer.id`.
-    ///   - values: A dictionary of field name → value pairs. Must include a `"method"` key.
-    /// - Returns: The authenticated `OrySession` if auto-login is enabled, or a session
-    ///            from the registration response.
+    ///   - credentials: Type-safe credentials for registration.
+    /// - Returns: The authenticated `OrySession`.
     /// - Throws: `OryError` if registration fails.
-    public func submitRegistration(flowId: String, values: [String: String]) async throws -> OrySession {
-        let body = try buildRegistrationBody(from: values)
+    public func submitRegistration(
+        flowId: String,
+        credentials: RegistrationCredentials
+    ) async throws -> OrySession {
+        let body = credentials.toUpdateBody()
 
         do {
             let apiConfig = configuration.makeAPIConfiguration()
-            let result = try await FrontendAPI.updateRegistrationFlow(
+            let result = try await OryClient.FrontendAPI.updateRegistrationFlow(
                 flow: flowId,
                 updateRegistrationFlowBody: body,
                 apiConfiguration: apiConfig
             )
 
-            // Store session token if provided (auto-login after registration)
             if let token = result.sessionToken {
                 try? await tokenStorage.saveToken(token)
             }
@@ -159,7 +163,6 @@ public final class OryAuthClient: Sendable {
                 return OrySession.from(session: session, token: token)
             }
 
-            // If no session returned, build a minimal one from identity
             return OrySession(
                 id: "",
                 token: token,
@@ -194,8 +197,9 @@ public final class OryAuthClient: Sendable {
             )
             return OrySession.from(session: session, token: token)
         } catch {
-            if case .error(let statusCode, _, _, _) = error, statusCode == 401 {
-                // Token is invalid or expired — clean up
+            if case .error(let statusCode, _, _, _) = error,
+               statusCode == 401
+            {
                 try? await tokenStorage.deleteToken()
                 return nil
             }
@@ -235,61 +239,50 @@ public final class OryAuthClient: Sendable {
             await tokenStorage.loadToken() != nil
         }
     }
+}
 
-    // MARK: - Body Builders
+// MARK: - Credential → OryClient Body Conversion
 
-    /// Build the `UpdateLoginFlowBody` from a values dictionary.
-    private func buildLoginBody(from values: [String: String]) throws -> UpdateLoginFlowBody {
-        guard let method = values["method"] else {
-            throw OryError.unknown(statusCode: 0, message: "Missing 'method' key in values")
-        }
+extension LoginCredentials {
 
-        switch method {
-        case "password":
+    /// Convert type-safe credentials to the generated OryClient body type.
+    func toUpdateBody() -> UpdateLoginFlowBody {
+        switch self {
+        case .password(let identifier, let password):
             let body = UpdateLoginFlowWithPasswordMethod(
-                identifier: values["identifier"] ?? "",
-                method: method,
-                password: values["password"] ?? ""
+                identifier: identifier,
+                method: "password",
+                password: password
             )
             return .typeUpdateLoginFlowWithPasswordMethod(body)
 
-        case "passkey":
+        case .passkey(let response):
             let body = UpdateLoginFlowWithPasskeyMethod(
-                method: method,
-                passkeyLogin: values["passkey_login"]
+                method: "passkey",
+                passkeyLogin: response
             )
             return .typeUpdateLoginFlowWithPasskeyMethod(body)
-
-        default:
-            throw OryError.unknown(statusCode: 0, message: "Unsupported login method: \(method)")
         }
     }
+}
 
-    /// Build the `UpdateRegistrationFlowBody` from a values dictionary.
-    private func buildRegistrationBody(from values: [String: String]) throws -> UpdateRegistrationFlowBody {
-        guard let method = values["method"] else {
-            throw OryError.unknown(statusCode: 0, message: "Missing 'method' key in values")
-        }
+extension RegistrationCredentials {
 
-        switch method {
-        case "password":
-            // Build traits from values (exclude known non-trait fields)
-            let reservedKeys: Set<String> = ["method", "password", "csrf_token"]
+    /// Convert type-safe credentials to the generated OryClient body type.
+    func toUpdateBody() -> UpdateRegistrationFlowBody {
+        switch self {
+        case .password(let password, let traits):
             var traitsDict: [String: JSONValue] = [:]
-            for (key, value) in values where key.hasPrefix("traits.") {
-                let traitKey = String(key.dropFirst("traits.".count))
-                traitsDict[traitKey] = .string(value)
+            for (key, value) in traits {
+                traitsDict[key] = .string(value)
             }
 
             let body = UpdateRegistrationFlowWithPasswordMethod(
-                method: method,
-                password: values["password"] ?? "",
+                method: "password",
+                password: password,
                 traits: .dictionary(traitsDict)
             )
             return .typeUpdateRegistrationFlowWithPasswordMethod(body)
-
-        default:
-            throw OryError.unknown(statusCode: 0, message: "Unsupported registration method: \(method)")
         }
     }
 }

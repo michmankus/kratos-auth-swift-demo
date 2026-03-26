@@ -1,8 +1,8 @@
 //
-//  OryAuth.swift
+//  OryConfiguration.swift
 //  OrySwiftSDK
 //
-//  Created by Michal Mańkus on 25/03/2026.
+//  Created by Michal Mańkus on 26/03/2026.
 //
 
 import Foundation
