@@ -14,6 +14,15 @@ import OryAuth
 final class AuthRepositoryImpl: AuthRepository {
 
     private let client: OryAuthClient
+    private(set) var currentSession: OrySession?
+    
+    var hasActiveSession: Bool {
+        guard let currentSession, currentSession.isActive else {
+            return false
+        }
+        
+        return true
+    }
 
     init(client: OryAuthClient) {
         self.client = client
@@ -35,8 +44,24 @@ final class AuthRepositoryImpl: AuthRepository {
         try await client.submitRegistration(flowId: flowId, credentials: credentials)
     }
 
-    func getSession() async throws -> OrySession? {
-        try await client.getSession()
+    @discardableResult
+    func loadSession() async throws -> OrySession {
+        do {
+            let session = try await client.loadSession()
+            currentSession = session
+            return session
+        } catch {
+            switch error {
+            case .missingSessionToken:
+                print("debug: No session token stored, loadSession() failed")
+            case .unauthorized:
+                print("debug: Failed to get session for token")
+            default:
+                print("debug: getSession() failed with other error: \(error)")
+            }
+            currentSession = nil
+            throw error
+        }
     }
 
     func logout() async throws {

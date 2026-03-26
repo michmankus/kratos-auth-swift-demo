@@ -38,8 +38,10 @@ final class RootViewModel: Sendable, ObservableObject {
         
         appState = .loadingInitialState
         
+        try? await Task.sleep(for: .seconds(2)) // Simulating some heavy loading
+        
         do {
-            let currentSession = try await authRepository.getSession()! // Retrieves saved session upon app start
+            let currentSession = try await authRepository.loadSession() // Retrieves saved session upon app start
             print("debug: currentSession: \(currentSession)")
             appState = .loggedIn
         } catch {

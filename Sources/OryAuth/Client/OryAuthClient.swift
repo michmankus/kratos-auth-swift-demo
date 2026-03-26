@@ -165,15 +165,17 @@ public final class OryAuthClient: Sendable {
 
     // MARK: - Session
 
-    /// Check the current session.
+    /// Loads the current session.
     ///
     /// Uses the stored session token to query the Ory API for the current session.
+    /// Shouldn't be called frequently, triggers network request.
+    /// Store the OrySession object for future reuse if needed.
     ///
-    /// - Returns: The current `OrySession`, or `nil` if not authenticated.
-    /// - Throws: `OryError` for network errors.
-    public func getSession() async throws -> OrySession? { // TOOD: - This should not be optional
+    /// - Returns: The current `OrySession`,
+    /// - Throws: `OryError` if fails to retrieve session.
+    public func loadSession() async throws(OryError) -> OrySession {
         guard let token = await tokenStorage.loadToken() else {
-            return nil
+            throw OryError.missingSessionToken
         }
 
         do {
@@ -188,7 +190,7 @@ public final class OryAuthClient: Sendable {
                statusCode == 401
             {
                 try? await tokenStorage.deleteToken()
-                return nil
+                throw OryError.unauthorized
             }
             throw OryError.map(from: error, flowType: .login)
         }
