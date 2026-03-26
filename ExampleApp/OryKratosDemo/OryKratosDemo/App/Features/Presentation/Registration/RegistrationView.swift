@@ -8,9 +8,13 @@
 import OryAuth
 import SwiftUI
 
-/// Dynamically renders a registration form from server-provided UI nodes.
 struct RegistrationView<ViewModel: RegistrationViewModelProtocol>: View {
-    @Bindable var viewModel: ViewModel
+
+    @StateObject private var viewModel: ViewModel
+    
+    init(viewModel: @autoclosure @escaping ReturnClosure<ViewModel>) {
+        _viewModel = .init(wrappedValue: viewModel())
+    }
 
     var body: some View {
         Form {

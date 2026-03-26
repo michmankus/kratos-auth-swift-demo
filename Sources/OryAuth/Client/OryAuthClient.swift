@@ -171,7 +171,7 @@ public final class OryAuthClient: Sendable {
     ///
     /// - Returns: The current `OrySession`, or `nil` if not authenticated.
     /// - Throws: `OryError` for network errors.
-    public func getSession() async throws -> OrySession? {
+    public func getSession() async throws -> OrySession? { // TOOD: - This should not be optional
         guard let token = await tokenStorage.loadToken() else {
             return nil
         }

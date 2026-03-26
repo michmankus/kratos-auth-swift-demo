@@ -5,39 +5,28 @@
 //  Created by Michal Mańkus on 26/03/2026.
 //
 
+import Combine
 import OryAuth
 import SwiftUI
 
-// MARK: - Protocol
-
-@MainActor
-protocol RegistrationViewModelProtocol: Observable, AnyObject {
-    var flow: FlowContainer? { get }
-    var fieldValues: [String: String] { get set }
-    var isLoading: Bool { get }
-    var errorMessage: String? { get }
-    var successMessage: String? { get }
-
-    func loadFlow() async
-    func submit() async
-}
-
 // MARK: - Implementation
 
-@Observable
-@MainActor
 final class RegistrationViewModel: RegistrationViewModelProtocol {
 
-    private(set) var flow: FlowContainer?
+    @Published private(set) var flow: FlowContainer?
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage: String?
+    @Published private(set) var successMessage: String?
+    
     var fieldValues: [String: String] = [:]
-    private(set) var isLoading = false
-    private(set) var errorMessage: String?
-    private(set) var successMessage: String?
-
+    
     private let repository: AuthRepository
-    private let onRegistrationSuccess: (OrySession) -> Void
+    private let onRegistrationSuccess: ValueClosure<OrySession>
 
-    init(repository: AuthRepository, onRegistrationSuccess: @escaping (OrySession) -> Void) {
+    init(
+        repository: AuthRepository,
+        onRegistrationSuccess: @escaping ValueClosure<OrySession>
+    ) {
         self.repository = repository
         self.onRegistrationSuccess = onRegistrationSuccess
     }
@@ -136,8 +125,6 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
 
 // MARK: - Fixture
 
-@Observable
-@MainActor
 final class RegistrationViewModelFixture: RegistrationViewModelProtocol {
 
     var flow: FlowContainer?
