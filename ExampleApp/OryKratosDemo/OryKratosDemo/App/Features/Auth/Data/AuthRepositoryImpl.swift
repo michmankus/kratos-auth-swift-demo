@@ -11,7 +11,7 @@ import OryAuth
 ///
 /// This is the only place in the app that knows about `OryAuthClient`.
 /// The presentation layer never touches it directly.
-final class AuthRepositoryImpl: AuthRepository {
+actor AuthRepositoryImpl: AuthRepository {
 
     private let client: OryAuthClient
     private(set) var currentSession: OrySession?

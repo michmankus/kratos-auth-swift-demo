@@ -11,7 +11,7 @@ import OryAuth
 ///
 /// The presentation layer depends only on this protocol,
 /// never on `OryAuthClient` directly.
-protocol AuthRepository: Sendable {
+protocol AuthRepository: Actor {
     var hasActiveSession: Bool { get }
     var currentSession: OrySession? { get }
     

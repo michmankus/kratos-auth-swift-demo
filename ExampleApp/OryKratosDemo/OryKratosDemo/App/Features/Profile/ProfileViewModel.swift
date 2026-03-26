@@ -32,7 +32,7 @@ final class ProfileViewModel: ProfileViewModelProtocol {
     // MARK: - Public methods
     
     func onTask() async {
-        guard let currentSession = authRepository.currentSession else {
+        guard let currentSession = await authRepository.currentSession else {
             state = .sessionNotLoaded
             return
         }
