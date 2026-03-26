@@ -41,7 +41,15 @@ actor AuthRepositoryImpl: AuthRepository {
     }
 
     func submitRegistration(flowId: String, credentials: RegistrationCredentials) async throws -> RegistrationResult {
-        try await client.submitRegistration(flowId: flowId, credentials: credentials)
+        do {
+            let result = try await client.submitRegistration(flowId: flowId, credentials: credentials)
+            if case .session(let orySession) = result {
+                currentSession = orySession
+            }
+            return result
+        } catch {
+            throw error
+        }
     }
 
     @discardableResult

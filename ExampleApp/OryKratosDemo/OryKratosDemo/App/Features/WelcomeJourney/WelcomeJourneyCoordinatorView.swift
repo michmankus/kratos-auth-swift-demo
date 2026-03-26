@@ -73,6 +73,11 @@ struct WelcomeJourneyCoordinatorView<Coordinator>: View where Coordinator: Welco
                     print("debug: registration success")
                     coordinator.didRegister()
                 },
+                onOpenEmailVerification: { identity in
+                    print("debug: open email verification for \(identity)")
+                    // TODO: - Add email verification screen
+                    coordinator.dismiss()
+                },
                 onDismiss: {
                     coordinator.dismiss()
                 }

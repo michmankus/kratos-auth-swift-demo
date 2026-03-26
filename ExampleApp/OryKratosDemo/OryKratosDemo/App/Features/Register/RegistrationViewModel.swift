@@ -22,15 +22,18 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     
     private let authRepository: AuthRepository
     private let onRegistrationSuccess: ValueClosure<OrySession>
+    private let onOpenEmailVerification: ValueClosure<OryIdentity>
     private let onDismiss: Closure
 
     init(
         authRepository: AuthRepository,
         onRegistrationSuccess: @escaping ValueClosure<OrySession>,
+        onOpenEmailVerification: @escaping ValueClosure<OryIdentity>,
         onDismiss: @escaping Closure
     ) {
         self.authRepository = authRepository
         self.onRegistrationSuccess = onRegistrationSuccess
+        self.onOpenEmailVerification = onOpenEmailVerification
         self.onDismiss = onDismiss
     }
 
@@ -63,12 +66,13 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
                 traits: traits
             )
             let result = try await authRepository.submitRegistration(flowId: flow.id, credentials: credentials)
-
+            
+            print("debug: registration result: \(result)")
             switch result {
             case .session(let session):
                 onRegistrationSuccess(session)
-            case .pendingVerification:
-                successMessage = "Registration successful! Please check your email to verify your account."
+            case .pendingVerification(let identity):
+                onOpenEmailVerification(identity)
             }
         } catch let error as OryError {
             handleOryError(error)
@@ -107,6 +111,7 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     }
 
     private func handleOryError(_ error: OryError) {
+        print("debug: registration OryError: \(error)")
         switch error {
         case .validation(let updatedFlow):
             flow = updatedFlow
