@@ -13,6 +13,10 @@ let package = Package(
         .library(
             name: "OryAuth",
             targets: ["OryAuth"]
+        ),
+        .library(
+            name: "OryUI",
+            targets: ["OryUI"]
         )
     ],
     dependencies: [
@@ -25,6 +29,12 @@ let package = Package(
             dependencies: [
                 "OryClient",
                 "SecureStorage"
+            ]
+        ),
+        .target(
+            name: "OryUI",
+            dependencies: [
+                "OryAuth"
             ]
         ),
         .testTarget(

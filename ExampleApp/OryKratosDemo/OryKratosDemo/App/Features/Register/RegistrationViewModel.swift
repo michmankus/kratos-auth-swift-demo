@@ -22,15 +22,18 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
     
     private let authRepository: AuthRepository
     private let onRegistrationSuccess: ValueClosure<OrySession>
+    private let onOpenEmailVerification: ValueClosure<OryIdentity>
     private let onDismiss: Closure
 
     init(
         authRepository: AuthRepository,
         onRegistrationSuccess: @escaping ValueClosure<OrySession>,
+        onOpenEmailVerification: @escaping ValueClosure<OryIdentity>,
         onDismiss: @escaping Closure
     ) {
         self.authRepository = authRepository
         self.onRegistrationSuccess = onRegistrationSuccess
+        self.onOpenEmailVerification = onOpenEmailVerification
         self.onDismiss = onDismiss
     }
 
@@ -41,9 +44,9 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
         do {
             let container = try await authRepository.initRegistrationFlow()
             flow = container
-            prefillHiddenFields(from: container)
+            fieldValues.merge(container.hiddenFieldValues) { _, new in new }
         } catch {
-            errorMessage = describeError(error)
+            handleError(error)
         }
 
         isLoading = false
@@ -67,18 +70,16 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
             switch result {
             case .session(let session):
                 onRegistrationSuccess(session)
-            case .pendingVerification:
-                successMessage = "Registration successful! Please check your email to verify your account."
+            case .pendingVerification(let identity):
+                onOpenEmailVerification(identity)
             }
-        } catch let error as OryError {
-            handleOryError(error)
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
         }
 
         isLoading = false
     }
-    
+
     func dismiss() {
         onDismiss()
     }
@@ -98,35 +99,17 @@ final class RegistrationViewModel: RegistrationViewModelProtocol {
         return traits
     }
 
-    private func prefillHiddenFields(from container: FlowContainer) {
-        for node in container.hiddenFields {
-            if let value = node.value {
-                fieldValues[node.name] = value
-            }
-        }
-    }
+    private func handleError(_ error: Error) {
+        let result = UserFacingOryErrorMapper.map(error)
+        errorMessage = result.message
 
-    private func handleOryError(_ error: OryError) {
-        switch error {
-        case .validation(let updatedFlow):
+        if let updatedFlow = result.updatedFlow {
             flow = updatedFlow
-            errorMessage = updatedFlow.messages.first(where: { $0.type == .error })?.text
-        case .flowExpired:
-            errorMessage = "Form expired. Loading a new one..."
-            Task { await loadFlow() }
-        case .network:
-            errorMessage = "Network error. Please check your connection."
-        default:
-            errorMessage = "An unexpected error occurred."
         }
-    }
 
-    private func describeError(_ error: Error) -> String {
-        if let oryError = error as? OryError {
-            handleOryError(oryError)
-            return errorMessage ?? "Unknown error"
+        if case .reloadFlow = result.action {
+            Task { await loadFlow() }
         }
-        return error.localizedDescription
     }
 }
 

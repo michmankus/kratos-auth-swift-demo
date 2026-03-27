@@ -6,6 +6,7 @@
 //
 
 import OryAuth
+import OryUI
 import SwiftUI
 
 struct RootView<ViewModel>: View where ViewModel: RootViewModel {
@@ -36,6 +37,10 @@ struct RootView<ViewModel>: View where ViewModel: RootViewModel {
             case .loadingInitialState:
                 VStack {
                     Text("loading initial state")
+                    Text("OryAuth \(OryAuth.version)")
+                        .font(.caption)
+                    Text("OryUI \(OryUI.version)")
+                        .font(.caption)
                     ProgressView()
                 }
             case .loggedIn:

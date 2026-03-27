@@ -6,57 +6,24 @@
 //
 
 import OryAuth
+import OryUI
 import SwiftUI
 
 /// Renders a single `FormNode` as the appropriate SwiftUI control.
 ///
-/// This is the key component that makes the form server-driven —
-/// the UI adapts to whatever fields the Ory API returns.
+/// Thin wrapper around ``OryFormField`` from the `OryUI` module,
+/// demonstrating how the SDK's ready-to-use components integrate
+/// into a consumer app.
 struct DynamicFormField: View {
     let node: FormNode
     @Binding var value: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            field
-            errorMessages
-        }
-    }
-
-    @ViewBuilder
-    private var field: some View {
-        switch node.fieldType {
-        case .password:
-            SecureField(node.label, text: $value)
-                .textContentType(.password)
-                .autocorrectionDisabled()
-
-        case .email:
-            TextField(node.label, text: $value)
-                .textContentType(.emailAddress)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-
-        case .text:
-            TextField(node.label, text: $value)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-
-        default:
-            TextField(node.label, text: $value)
-        }
-    }
-
-    @ViewBuilder
-    private var errorMessages: some View {
-        ForEach(node.errorMessages) { message in
-            Text(message.text)
-                .font(.caption)
-                .foregroundStyle(.red)
-        }
+        OryFormField(node: node, value: $value)
     }
 }
+
+#if DEBUG
 
 #Preview("Text field") {
     DynamicFormField(
@@ -97,3 +64,5 @@ struct DynamicFormField: View {
     )
     .padding()
 }
+
+#endif

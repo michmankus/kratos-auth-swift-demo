@@ -53,7 +53,7 @@ struct WelcomeJourneyCoordinatorView<Coordinator>: View where Coordinator: Welco
     private var loginView: some View {
         LoginView(
             viewModel: LoginViewModel(
-                repository: AppComponents.authRepository,
+                authRepository: AppComponents.authRepository,
                 onLoginSuccess: { session in
                     print("debug: login success")
                     coordinator.didLogin()
@@ -72,6 +72,11 @@ struct WelcomeJourneyCoordinatorView<Coordinator>: View where Coordinator: Welco
                 onRegistrationSuccess: { session in
                     print("debug: registration success")
                     coordinator.didRegister()
+                },
+                onOpenEmailVerification: { identity in
+                    print("debug: open email verification for \(identity)")
+                    // TODO: - Add email verification screen
+                    coordinator.dismiss()
                 },
                 onDismiss: {
                     coordinator.dismiss()

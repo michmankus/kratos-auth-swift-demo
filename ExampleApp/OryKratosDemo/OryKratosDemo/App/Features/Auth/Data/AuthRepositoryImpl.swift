@@ -13,7 +13,7 @@ import OryAuth
 /// The presentation layer never touches it directly.
 actor AuthRepositoryImpl: AuthRepository {
 
-    private let client: OryAuthClient
+    private let client: any OryAuthClientProtocol
     private(set) var currentSession: OrySession?
     
     var hasActiveSession: Bool {
@@ -24,7 +24,7 @@ actor AuthRepositoryImpl: AuthRepository {
         return true
     }
 
-    init(client: OryAuthClient) {
+    init(client: any OryAuthClientProtocol) {
         self.client = client
     }
 
@@ -41,7 +41,15 @@ actor AuthRepositoryImpl: AuthRepository {
     }
 
     func submitRegistration(flowId: String, credentials: RegistrationCredentials) async throws -> RegistrationResult {
-        try await client.submitRegistration(flowId: flowId, credentials: credentials)
+        do {
+            let result = try await client.submitRegistration(flowId: flowId, credentials: credentials)
+            if case .session(let orySession) = result {
+                currentSession = orySession
+            }
+            return result
+        } catch {
+            throw error
+        }
     }
 
     @discardableResult
