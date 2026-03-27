@@ -17,16 +17,16 @@ final class LoginViewModel: LoginViewModelProtocol {
     
     var fieldValues: [String: String] = [:]
 
-    private let repository: AuthRepository
+    private let authRepository: AuthRepository
     private let onLoginSuccess: ValueClosure<OrySession>
     private let onDismiss: Closure
 
     init(
-        repository: AuthRepository,
+        authRepository: AuthRepository,
         onLoginSuccess: @escaping ValueClosure<OrySession>,
         onDismiss: @escaping Closure
     ) {
-        self.repository = repository
+        self.authRepository = authRepository
         self.onLoginSuccess = onLoginSuccess
         self.onDismiss = onDismiss
     }
@@ -36,11 +36,11 @@ final class LoginViewModel: LoginViewModelProtocol {
         errorMessage = nil
 
         do {
-            let container = try await repository.initLoginFlow()
+            let container = try await authRepository.initLoginFlow()
             flow = container
-            prefillHiddenFields(from: container)
+            fieldValues.merge(container.hiddenFieldValues) { _, new in new }
         } catch {
-            errorMessage = describeError(error)
+            handleError(error)
         }
 
         isLoading = false
@@ -57,58 +57,32 @@ final class LoginViewModel: LoginViewModelProtocol {
                 identifier: fieldValues["identifier"] ?? "",
                 password: fieldValues["password"] ?? ""
             )
-            let session = try await repository.submitLogin(flowId: flow.id, credentials: credentials)
+            let session = try await authRepository.submitLogin(flowId: flow.id, credentials: credentials)
             onLoginSuccess(session)
-        } catch let error as OryError {
-            handleOryError(error)
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
         }
 
         isLoading = false
     }
-    
+
     func dismiss() {
         onDismiss()
     }
 
     // MARK: - Private
 
-    private func prefillHiddenFields(from container: FlowContainer) {
-        for node in container.hiddenFields {
-            if let value = node.value {
-                fieldValues[node.name] = value
-            }
-        }
-    }
+    private func handleError(_ error: Error) {
+        let result = UserFacingOryErrorMapper.map(error)
+        errorMessage = result.message
 
-    private func handleOryError(_ error: OryError) {
-        switch error {
-        case .validation(let updatedFlow):
+        if let updatedFlow = result.updatedFlow {
             flow = updatedFlow
-            errorMessage = updatedFlow.messages.first(where: { $0.type == .error })?.text
-        case .flowExpired:
-            errorMessage = "Session expired. Loading a new form..."
-            Task { await loadFlow() }
-        case .network:
-            errorMessage = "Network error. Please check your connection."
-        case .sessionAlreadyAvailable:
-            errorMessage = "You are already logged in."
-        case .missingSessionToken:
-            errorMessage = "Login succeeded but no session was created. Please try again."
-        case .unauthorized:
-            errorMessage = "Unauthorized."
-        case .unknown(_, let message):
-            errorMessage = message ?? "An unexpected error occurred."
         }
-    }
 
-    private func describeError(_ error: Error) -> String {
-        if let oryError = error as? OryError {
-            handleOryError(oryError)
-            return errorMessage ?? "Unknown error"
+        if case .reloadFlow = result.action {
+            Task { await loadFlow() }
         }
-        return error.localizedDescription
     }
 }
 

@@ -53,7 +53,7 @@ struct WelcomeJourneyCoordinatorView<Coordinator>: View where Coordinator: Welco
     private var loginView: some View {
         LoginView(
             viewModel: LoginViewModel(
-                repository: AppComponents.authRepository,
+                authRepository: AppComponents.authRepository,
                 onLoginSuccess: { session in
                     print("debug: login success")
                     coordinator.didLogin()
