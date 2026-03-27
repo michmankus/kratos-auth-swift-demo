@@ -20,6 +20,8 @@ import OryClient
 /// - `.flowExpired` → re-initialize the flow
 /// - `.sessionAlreadyAvailable` → redirect to profile
 /// - `.unauthorized` → prompt login
+/// - `.missingSessionToken`→ todo add description
+/// - `.keychainError` → keychain failed when retrieving or saving data
 /// - `.unknown` → show generic server error message
 public enum OryError: Error, Sendable {
 
@@ -50,6 +52,12 @@ public enum OryError: Error, Sendable {
     /// This is unexpected for native API flows and may indicate a server
     /// misconfiguration or an incompatible Ory project setup.
     case missingSessionToken
+    
+    /// The Keychain operation throw an error
+    ///
+    /// This is usually unexpected unless unexpected issue with a device
+    /// Wraps error thrown by the keychain as associated value iin the enum case
+    case keychainError(Error)
 
     /// An unexpected server error occurred.
     case unknown(statusCode: Int, message: String?)

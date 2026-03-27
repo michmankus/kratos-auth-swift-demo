@@ -27,7 +27,7 @@ public protocol OryAuthClientProtocol: Sendable {
     ///
     /// - Returns: A `FlowContainer` containing the form fields to render.
     /// - Throws: `OryError` if the request fails.
-    func initLoginFlow() async throws -> FlowContainer
+    func initLoginFlow() async throws(OryError) -> FlowContainer
 
     /// Submit login credentials for a given flow.
     ///
@@ -38,13 +38,13 @@ public protocol OryAuthClientProtocol: Sendable {
     ///   - credentials: Type-safe credentials for the chosen auth method.
     /// - Returns: The authenticated `OrySession`.
     /// - Throws: `OryError` if login fails.
-    func submitLogin(flowId: String, credentials: LoginCredentials) async throws -> OrySession
+    func submitLogin(flowId: String, credentials: LoginCredentials) async throws(OryError) -> OrySession
 
     /// Initialize a new native registration flow.
     ///
     /// - Returns: A `FlowContainer` containing the registration form fields.
     /// - Throws: `OryError` if the request fails.
-    func initRegistrationFlow() async throws -> FlowContainer
+    func initRegistrationFlow() async throws(OryError) -> FlowContainer
 
     /// Submit registration data for a given flow.
     ///
@@ -53,19 +53,19 @@ public protocol OryAuthClientProtocol: Sendable {
     ///   - credentials: Type-safe credentials for registration.
     /// - Returns: A ``RegistrationResult`` indicating the outcome.
     /// - Throws: `OryError` if registration fails.
-    func submitRegistration(flowId: String, credentials: RegistrationCredentials) async throws -> RegistrationResult
+    func submitRegistration(flowId: String, credentials: RegistrationCredentials) async throws(OryError) -> RegistrationResult
 
     /// Loads the current session from the server using the stored token.
     ///
     /// - Returns: The current `OrySession`.
     /// - Throws: `OryError.missingSessionToken` if no token is stored,
     ///   `OryError.unauthorized` if the token is invalid.
-    func loadSession() async throws -> OrySession
+    func loadSession() async throws(OryError) -> OrySession
 
     /// Log out and clear the stored session token.
     ///
     /// - Throws: `OryError` if the logout API call fails.
-    func logout() async throws
+    func logout() async throws(OryError)
 
     /// Whether a session token is stored locally.
     ///

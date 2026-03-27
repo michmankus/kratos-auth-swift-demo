@@ -69,6 +69,9 @@ enum UserFacingOryErrorMapper {
 
         case .missingSessionToken:
             return UserFacingError(message: "Login succeeded but no session was created. Please try again.")
+        
+        case .keychainError:
+            return UserFacingError(message: "Failed retrieving saved session.")
 
         case .unauthorized:
             return UserFacingError(message: "Unauthorized.")

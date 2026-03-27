@@ -59,7 +59,7 @@ actor AuthRepositoryImpl: AuthRepository {
             print("debug: Successfully loaded session: \(session)")
             currentSession = session
             return session
-        } catch let error as OryError {
+        } catch {
             switch error {
             case .missingSessionToken:
                 print("debug: No session token stored, loadSession() failed")
@@ -68,9 +68,6 @@ actor AuthRepositoryImpl: AuthRepository {
             default:
                 print("debug: getSession() failed with other error: \(error)")
             }
-            currentSession = nil
-            throw error
-        } catch {
             currentSession = nil
             throw error
         }
