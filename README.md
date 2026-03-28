@@ -47,6 +47,7 @@ bundle install
 | `bundle exec fastlane test_app` | Run Example App unit tests |
 | `bundle exec fastlane build_all` | Build everything (SDK + App) |
 | `bundle exec fastlane test_all` | Run all tests (SDK + App) |
+| `bundle exec fastlane coverage_sdk` | Run SDK tests with code coverage report |
 
 ### 3. Build without Fastlane
 
@@ -187,3 +188,5 @@ The SDK currently handles `input` node types. I'd add support for `text` nodes (
 **Localization.** OryUI currently uses server-provided labels and messages as-is. I'd add a localization layer so developers can override messages, button titles, and error strings. But again - teams with custom UI handle localization themselves, so this mainly benefits the pre-built components path.
 
 **Changelog automation.** The repo uses conventional commits (`feat:`, `chore:`, `fix:`). I'd add a script (or Fastlane lane) that generates a changelog from the commit history, grouped by type. Makes releases easier to document.
+
+**SecureEnclaveKeyStorage** I would consider implementing a new utility class for securely managing cryptographic keys using Apple's Secure Enclave. It would porvide methods to generate, retrieve, delete and check the existence of keys, ensuring that private keys never leave the device's secure environment (lookup how secure enclave works on Apple Hardware). This would enhance security for cryptographic operations sunc as signing and encryption.

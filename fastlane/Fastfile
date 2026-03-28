@@ -60,4 +60,14 @@ platform :ios do
     test_app
   end
 
+  desc "Run SDK tests with code coverage report"
+  lane :coverage_sdk do
+    sh("cd .. && swift test --enable-code-coverage")
+    sh("cd .. && xcrun llvm-cov report " \
+       ".build/debug/OrySwiftSDKPackageTests.xctest/Contents/MacOS/OrySwiftSDKPackageTests " \
+       "--instr-profile=.build/arm64-apple-macosx/debug/codecov/default.profdata " \
+       "--sources Sources/OryAuth")
+    UI.success("Coverage report generated ✅")
+  end
+
 end

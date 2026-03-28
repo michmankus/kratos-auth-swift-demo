@@ -40,7 +40,9 @@ let package = Package(
         .testTarget(
             name: "OryAuthTests",
             dependencies: [
-                "OryAuth"
+                "OryAuth",
+                "OryClient",
+                "SecureStorage"
             ]
         ),
     ],
