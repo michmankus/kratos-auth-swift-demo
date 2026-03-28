@@ -7,7 +7,7 @@ A headless-first Swift SDK for Ory Kratos authentication flows, with a SwiftUI e
 ```
 .
 ├── Sources/
-│   ├── OryAuth/          # Core SDK — headless auth client, models, error handling
+│   ├── OryAuth/          # Core SDK - headless auth client, models, error handling
 │   └── OryUI/            # Optional SwiftUI components for quick prototyping
 ├── Dependencies/
 │   ├── OryClient/        # Generated OpenAPI Swift client (v1.22.22)
@@ -67,8 +67,8 @@ dependencies: [
 Then import the modules you need:
 
 ```swift
-import OryAuth  // Core SDK — required
-import OryUI    // SwiftUI components — optional
+import OryAuth  // Core SDK - required
+import OryUI    // SwiftUI components - optional
 ```
 
 ### Minimal Usage
@@ -93,23 +93,92 @@ let session = try await client.submitLogin(
 
 ## Architecture
 
-### SDK (OryAuth)
+### SDK Boundaries
 
-- **Headless-first**: No UIKit/SwiftUI dependency. Pure Swift models and async/await API.
-- **Server-driven forms**: `FlowContainer` and `FormNode` models parse Ory's UI nodes so apps render forms dynamically — never hardcoded.
-- **Typed errors**: `OryError` distinguishes validation, network, flow expiry, and session errors. Each mapper conforms to a `Mapper` protocol for testability.
-- **Secure token storage**: Session tokens stored in Keychain via injectable `KeychainProtocol`.
-- **Swift 6 strict concurrency**: All types are `Sendable`, all APIs are async/await.
+The SDK is split into three layers. Each one only talks to the layer below it.
 
-### SDK (OryUI)
+```
+┌─────────────────────────────────────────────┐
+│  Your App / ExampleApp                      │
+│  imports: OryAuth, OryUI (optional)         │
+├─────────────────────────────────────────────┤
+│  OryAuth  (public API)                      │
+│  OryAuthClient, FlowContainer, FormNode,    │
+│  OryError, OrySession, LoginCredentials     │
+├─────────────────────────────────────────────┤
+│  OryClient  (generated, never exposed)      │
+│  SecureStorage  (Keychain, injectable)       │
+└─────────────────────────────────────────────┘
+```
 
-- **Drop-in SwiftUI components**: `OryFormField`, `OrySubmitButton`, `OryNodeMessages`, `OryFlowForm`.
-- **Native field mapping**: Each `FieldType` maps to the appropriate iOS control (SecureField, Toggle, TextField with correct keyboard type).
-- **Optional**: Most apps will build custom UI. OryUI is for quick MVPs.
+- **OryAuth** is the public SDK. It exposes only clean Swift types. The generated `OryClient` types never leak out - consumers never import `OryClient` directly.
+- **OryUI** is an optional SwiftUI module. It provides ready-to-use form components (`OryFormField`, `OrySubmitButton`, `OryFlowForm`) built on top of OryAuth models. Most apps will write their own UI - OryUI is there for quick MVPs.
+- **OryClient** is the raw OpenAPI-generated client. It lives in `Dependencies/` and is an internal detail of OryAuth.
+- **SecureStorage** wraps the iOS Keychain behind a `KeychainProtocol`. You can inject a mock for tests.
 
-### Example App (OryKratosDemo)
+### State Management
 
-- **MVVM** with protocol-based ViewModels and Fixture pattern for SwiftUI previews.
-- **Clean Architecture**: Presentation / Domain / Data layers. Only `AuthRepositoryImpl` imports the SDK client.
-- **Coordinator pattern** for navigation via FlowStacks.
-- **Dynamic forms**: UI renders whatever fields the server returns.
+There's no global state in the SDK. Each method call is a standalone request.
+
+- **Flows are short-lived.** You call `initLoginFlow()`, get a `FlowContainer`, render it, then submit. The SDK doesn't hold on to it.
+- **Session tokens** are the only persisted state. They go straight to the Keychain via `TokenStorage`. The SDK reads/writes them as needed - no in-memory cache.
+- **The Example App** manages its own state. `AuthRepositoryImpl` (an actor) caches the current `OrySession` and exposes it to ViewModels. ViewModels are `@MainActor` and own their UI state (`flow`, `fieldValues`, `isLoading`, `errorMessage`). Navigation lives in a Coordinator, separate from business logic.
+
+### Error Model
+
+Every SDK method throws `OryError`. It's an enum with a case for each thing that can go wrong:
+
+```swift
+public enum OryError: Error, Sendable {
+    case network(underlying: Error)       // no connectivity, timeout, DNS
+    case validation(flow: FlowContainer)  // 400 - form has field-level errors
+    case flowExpired(newFlowId: String?)  // 410 - flow timed out, start over
+    case sessionAlreadyAvailable          // 400 - user is already logged in
+    case unauthorized                     // 401 - token expired or invalid
+    case missingSessionToken              // server didn't return a token
+    case keychainError(Error)             // Keychain read/write failed
+    case unknown(statusCode: Int, message: String?)
+}
+```
+
+The key case is `.validation(flow:)` - it carries an updated `FlowContainer` with per-field error messages. Your UI just swaps the old flow for the new one and the errors show up next to the right fields. No manual parsing needed.
+
+Error mapping is done by three small mappers, each conforming to a `Mapper` protocol:
+
+- `OryErrorMapper` - routes `any Error` to the right case (URLError, ErrorResponse, etc.)
+- `ValidationErrorMapper` - decodes HTTP 400 bodies into `.validation` or `.sessionAlreadyAvailable`
+- `FlowExpiredErrorMapper` - decodes HTTP 410 bodies into `.flowExpired`
+
+All mappers use `Failure = Never`, so you call them with `.flatMap()` and always get a result.
+
+## If I Had 2 More Days
+
+### Registration Flow
+
+The SDK already supports `initRegistrationFlow()` and `submitRegistration()`. The Example App has a working registration screen. What's missing is the full post-registration experience - email verification polling, "check your inbox" screen, and the re-login redirect after verification completes. I'd also add recovery and verification flows to the SDK (`initRecoveryFlow`, `submitRecovery`, etc.) since they follow the same init -> render -> submit pattern.
+
+### Theming & UI Customization
+
+OryUI ships functional components but no theming system. I'd add SwiftUI view modifiers so you can customize colors, fonts, and spacing without forking the code. Something like `.oryFormStyle(theme:)` that cascades down to all OryUI components via environment values.
+
+That said - in every production project I've worked on over the past decade, teams build their own UI with their own design system. Nobody uses SDK-provided components beyond a quick MVP. So theming is a nice-to-have, not a blocker. The real value is in OryAuth's headless API, which gives you full control.
+
+### Additional Node & Method Coverage
+
+The SDK currently handles `input` node types. I'd add support for `text` nodes (TOTP secret display), `image` nodes (QR codes), and `anchor` nodes (links). On the method side, I'd cover `code` (OTP via email/SMS) and `passkey` (WebAuthn) - the credential enums are already designed for extension. Passkeys need `ASAuthorizationPlatformPublicKeyCredentialProvider` and Associated Domains, which I'd implement but demo with password since passkeys require server-side domain configuration.
+
+### What Else I'd Improve
+
+**Testing infrastructure.** Add `StubFactory` types that make it trivial to create test fixtures for `FlowContainer`, `FormNode`, `OrySession`, etc. Right now previews and tests build their own stubs - a shared factory in the SDK would save everyone time.
+
+**UIKit Example App.** I focused on SwiftUI for time reasons. I'd add a parallel UIKit example to show that the SDK works just as well without SwiftUI - it's headless, after all. The same `OryAuthClient` and `AuthRepository` pattern works with UIKit ViewControllers and delegates.
+
+**Full pre-built screens.** OryUI currently provides form-level components. I'd consider shipping complete screens (login, registration, profile) that work out of the box with zero integration. The trade-off is real though - production apps almost always build custom flows with their own navigation and design system. Pre-built screens help juniors and MVPs, but experienced teams won't use them.
+
+**Configurable Keychain storage.** `TokenStorage` currently hardcodes `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`. I'd make `kSecAttrAccessible` and `kSecAttrSynchronizable` configurable via `OryConfiguration`, so developers can choose their security level or sync tokens across devices via iCloud Keychain.
+
+**Multi-platform support.** The SDK already builds for macOS. I'd add tvOS support - it should be straightforward since OryAuth has no UI dependencies. OryUI would need separate packages per platform (tvOS focus-based UI is fundamentally different from iOS touch).
+
+**Localization.** OryUI currently uses server-provided labels and messages as-is. I'd add a localization layer so developers can override messages, button titles, and error strings. But again - teams with custom UI handle localization themselves, so this mainly benefits the pre-built components path.
+
+**Changelog automation.** The repo uses conventional commits (`feat:`, `chore:`, `fix:`). I'd add a script (or Fastlane lane) that generates a changelog from the commit history, grouped by type. Makes releases easier to document.
