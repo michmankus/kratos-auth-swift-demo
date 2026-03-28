@@ -2,6 +2,11 @@
 
 A headless-first Swift SDK for Ory Kratos authentication flows, with a SwiftUI example app.
 
+## Demo
+
+https://github.com/user-attachments/assets/7e05f36f-356c-4969-865d-98cb0d372bdd
+
+
 ## Project Structure
 
 ```
