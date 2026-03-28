@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import OryClient
 
 // MARK: - OryError
 
@@ -20,7 +19,7 @@ import OryClient
 /// - `.flowExpired` → re-initialize the flow
 /// - `.sessionAlreadyAvailable` → redirect to profile
 /// - `.unauthorized` → prompt login
-/// - `.missingSessionToken`→ todo add description
+/// - `.missingSessionToken` → no stored token, prompt login
 /// - `.keychainError` → keychain failed when retrieving or saving data
 /// - `.unknown` → show generic server error message
 public enum OryError: Error, Sendable {
@@ -52,143 +51,13 @@ public enum OryError: Error, Sendable {
     /// This is unexpected for native API flows and may indicate a server
     /// misconfiguration or an incompatible Ory project setup.
     case missingSessionToken
-    
-    /// The Keychain operation throw an error
+
+    /// The Keychain operation threw an error.
     ///
-    /// This is usually unexpected unless unexpected issue with a device
-    /// Wraps error thrown by the keychain as associated value iin the enum case
+    /// This is usually unexpected unless there is an issue with the device.
+    /// Wraps the error thrown by the keychain as an associated value.
     case keychainError(Error)
 
     /// An unexpected server error occurred.
     case unknown(statusCode: Int, message: String?)
-}
-
-// MARK: - Error Mapping
-
-extension OryError {
-
-    /// Maps any error thrown by the generated OryClient into a typed `OryError`.
-    ///
-    /// Handles both `ErrorResponse` from the generated client and generic
-    /// `Error` types (e.g. `URLError` for network failures).
-    static func map(from error: any Error, flowType: FlowType = .login) -> OryError {
-        // Check for generated client's ErrorResponse
-        if let errorResponse = error as? OryClient.ErrorResponse {
-            return mapErrorResponse(errorResponse, flowType: flowType)
-        }
-
-        // URLError → network error
-        if error is URLError {
-            return .network(underlying: error)
-        }
-
-        // Already an OryError (e.g. from body builder) — pass through
-        if let oryError = error as? OryError {
-            return oryError
-        }
-
-        // Unknown error type
-        return .network(underlying: error)
-    }
-
-    /// Maps a generated `ErrorResponse` from OryClient into a typed `OryError`.
-    private static func mapErrorResponse(
-        _ errorResponse: OryClient.ErrorResponse,
-        flowType: FlowType
-    ) -> OryError {
-        guard case .error(let statusCode, let data, _, let underlyingError) = errorResponse else {
-            return .unknown(statusCode: -1, message: "Unexpected error format")
-        }
-
-        // Network-level errors (no HTTP response)
-        if statusCode < 0 || underlyingError is URLError {
-            return .network(underlying: underlyingError)
-        }
-
-        switch statusCode {
-        case 400:
-            return map400Error(data: data, flowType: flowType)
-        case 401:
-            return .unauthorized
-        case 410:
-            return map410Error(data: data)
-        default:
-            let message = extractMessage(from: data)
-            return .unknown(statusCode: statusCode, message: message)
-        }
-    }
-
-    /// Handle HTTP 400 — either a known error ID or a validation error with updated flow.
-    private static func map400Error(data: Data?, flowType: FlowType) -> OryError {
-        guard let data else {
-            return .unknown(statusCode: 400, message: nil)
-        }
-
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-
-        // First, check for known error IDs (e.g. session_already_available)
-        if let genericError = try? decoder.decode(OryClient.GenericError.self, from: data) {
-            if genericError.id == "session_already_available" {
-                return .sessionAlreadyAvailable
-            }
-        }
-
-        // Otherwise, treat as validation error — the body is an updated flow with messages
-        switch flowType {
-        case .login:
-            if let loginFlow = try? decoder.decode(OryClient.LoginFlow.self, from: data) {
-                return .validation(flow: NodeParser.parseLoginFlow(loginFlow))
-            }
-        case .registration:
-            if let registrationFlow = try? decoder.decode(OryClient.RegistrationFlow.self, from: data) {
-                return .validation(flow: NodeParser.parseRegistrationFlow(registrationFlow))
-            }
-        }
-
-        let message = extractMessage(from: data)
-        return .unknown(statusCode: 400, message: message)
-    }
-
-    /// Handle HTTP 410 — flow expired, possibly with a replacement flow ID.
-    private static func map410Error(data: Data?) -> OryError {
-        guard let data else {
-            return .flowExpired(newFlowId: nil)
-        }
-
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-
-        // Try to decode as ErrorFlowReplaced which contains use_flow_id
-        if let replaced = try? decoder.decode(OryClient.ErrorFlowReplaced.self, from: data) {
-            return .flowExpired(newFlowId: replaced.useFlowId)
-        }
-
-        // Try GenericError for the error message
-        if let genericError = try? decoder.decode(OryClient.GenericError.self, from: data) {
-            if genericError.id == "self_service_flow_expired" {
-                return .flowExpired(newFlowId: nil)
-            }
-        }
-
-        return .flowExpired(newFlowId: nil)
-    }
-
-    /// Extract a human-readable message from response data.
-    private static func extractMessage(from data: Data?) -> String? {
-        guard let data else { return nil }
-        let decoder = JSONDecoder()
-        if let genericError = try? decoder.decode(OryClient.GenericError.self, from: data) {
-            return genericError.message
-        }
-        return String(data: data, encoding: .utf8)
-    }
-}
-
-// MARK: - FlowType
-
-/// Identifies which type of flow is being processed, used internally for error mapping.
-public enum FlowType: String, Sendable {
-    case login
-    case registration
 }

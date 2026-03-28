@@ -68,7 +68,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
             )
             return NodeParser.parseLoginFlow(loginFlow)
         } catch {
-            throw OryError.map(from: error, flowType: .login)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
@@ -103,7 +103,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
 
             return try await storeAndBuildSession(token: token, session: result.session)
         } catch {
-            throw OryError.map(from: error, flowType: .login)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
@@ -121,7 +121,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
             )
             return NodeParser.parseRegistrationFlow(registrationFlow)
         } catch {
-            throw OryError.map(from: error, flowType: .registration)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
@@ -159,7 +159,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
             // No session → verification is required before login
             return .pendingVerification(identity: OryIdentity.from(result.identity))
         } catch {
-            throw OryError.map(from: error, flowType: .registration)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
@@ -192,7 +192,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
                 try? await tokenStorage.deleteToken()
                 throw OryError.unauthorized
             }
-            throw OryError.map(from: error, flowType: .login)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
@@ -215,7 +215,7 @@ public final class OryAuthClient: OryAuthClientProtocol {
         } catch {
             // Even if logout fails server-side, clear local token
             try? await tokenStorage.deleteToken()
-            throw OryError.map(from: error, flowType: .login)
+            throw OryErrorMapper.flatMap(error)
         }
     }
 
