@@ -22,6 +22,8 @@ platform :ios do
 
   desc "Run OryAuth SDK unit tests (Swift Package)"
   lane :test_sdk do
+    sh("cd ../Dependencies/SecureStorage && swift test")
+    UI.success("SecureStorage tests passed ✅")
     sh("cd .. && swift test")
     UI.success("SDK tests passed ✅")
   end
