@@ -1,0 +1,63 @@
+default_platform(:ios)
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+EXAMPLE_APP_PROJECT = "ExampleApp/OryKratosDemo/OryKratosDemo.xcodeproj"
+EXAMPLE_APP_SCHEME  = "OryKratosDemo"
+DESTINATION         = "platform=iOS Simulator,name=iPhone 17 Pro"
+
+# ---------------------------------------------------------------------------
+# Lanes
+# ---------------------------------------------------------------------------
+
+platform :ios do
+
+  desc "Build the OryAuth & OryUI SDK (Swift Package)"
+  lane :build_sdk do
+    sh("cd .. && swift build")
+    UI.success("SDK built successfully ✅")
+  end
+
+  desc "Run OryAuth SDK unit tests (Swift Package)"
+  lane :test_sdk do
+    sh("cd .. && swift test")
+    UI.success("SDK tests passed ✅")
+  end
+
+  desc "Build the Example App (OryKratosDemo)"
+  lane :build_app do
+    xcodebuild(
+      project: EXAMPLE_APP_PROJECT,
+      scheme: EXAMPLE_APP_SCHEME,
+      destination: DESTINATION,
+      xcargs: "build"
+    )
+    UI.success("Example App built successfully ✅")
+  end
+
+  desc "Run Example App unit tests"
+  lane :test_app do
+    scan(
+      project: EXAMPLE_APP_PROJECT,
+      scheme: EXAMPLE_APP_SCHEME,
+      destination: DESTINATION,
+      clean: false
+    )
+    UI.success("Example App tests passed ✅")
+  end
+
+  desc "Build everything (SDK + Example App)"
+  lane :build_all do
+    build_sdk
+    build_app
+  end
+
+  desc "Run all tests (SDK + Example App)"
+  lane :test_all do
+    test_sdk
+    test_app
+  end
+
+end
