@@ -47,6 +47,7 @@ bundle install
 | `bundle exec fastlane test_app` | Run Example App unit tests |
 | `bundle exec fastlane build_all` | Build everything (SDK + App) |
 | `bundle exec fastlane test_all` | Run all tests (SDK + App) |
+| `bundle exec fastlane coverage_sdk` | Run SDK tests with code coverage report |
 
 ### 3. Build without Fastlane
 

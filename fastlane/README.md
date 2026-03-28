@@ -63,6 +63,14 @@ Build everything (SDK + Example App)
 
 Run all tests (SDK + Example App)
 
+### ios coverage_sdk
+
+```sh
+[bundle exec] fastlane ios coverage_sdk
+```
+
+Run SDK tests with code coverage report
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
