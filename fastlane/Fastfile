@@ -29,7 +29,7 @@ platform :ios do
   end
 
   desc "Build the Example App (OryKratosDemo)"
-  lane :build_app do
+  lane :build_example_app do
     xcodebuild(
       project: EXAMPLE_APP_PROJECT,
       scheme: EXAMPLE_APP_SCHEME,
@@ -40,7 +40,7 @@ platform :ios do
   end
 
   desc "Run Example App unit tests"
-  lane :test_app do
+  lane :test_example_app do
     scan(
       project: EXAMPLE_APP_PROJECT,
       scheme: EXAMPLE_APP_SCHEME,
@@ -53,13 +53,13 @@ platform :ios do
   desc "Build everything (SDK + Example App)"
   lane :build_all do
     build_sdk
-    build_app
+    build_example_app
   end
 
   desc "Run all tests (SDK + Example App)"
   lane :test_all do
     test_sdk
-    test_app
+    test_example_app
   end
 
   desc "Run SDK tests with code coverage report"

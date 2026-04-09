@@ -31,18 +31,18 @@ Build the OryAuth & OryUI SDK (Swift Package)
 
 Run OryAuth SDK unit tests (Swift Package)
 
-### ios build_app
+### ios build_example_app
 
 ```sh
-[bundle exec] fastlane ios build_app
+[bundle exec] fastlane ios build_example_app
 ```
 
 Build the Example App (OryKratosDemo)
 
-### ios test_app
+### ios test_example_app
 
 ```sh
-[bundle exec] fastlane ios test_app
+[bundle exec] fastlane ios test_example_app
 ```
 
 Run Example App unit tests

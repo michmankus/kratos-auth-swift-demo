@@ -8,7 +8,7 @@
 import Foundation
 @testable import SecureStorage
 
-private actor MockKeychain: KeychainProtocol {
+actor MockKeychain: KeychainProtocol {
 
     private var store: [String: Data] = [:]
 

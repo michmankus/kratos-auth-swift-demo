@@ -29,7 +29,22 @@ https://github.com/user-attachments/assets/7e05f36f-356c-4969-865d-98cb0d372bdd
 - Swift 6
 - Ruby (for Fastlane)
 
-## Quick Start
+## Quick Start [XCode]
+
+### Demo App
+
+Open the `ExampleApp/OryKratosDemo/OryKratosDemo.xcodeproj` file with Xcode 16+. This should open a demo app and load Swift Package dependencies. Run the app in simulator by using CMD + R or just click it at the top navigation bar.
+NOTE: You can't have SDK project open in Xcode and ExampleApp at the same time, it will cause issues with loading dependencies.
+
+You can also run in the console `open ExampleApp/OryKratosDemo/OryKratosDemo.xcodeproj`
+
+### SDK
+
+Open the XCode, then click File > Open > root folder of the repository > Click Open. This should open the SDK Swift Package itself in XCode and load dependencies.
+
+If you have xcode tools installed, you can also run in the console `xed .`
+
+## Quick Start [Console]
 
 ### 1. Install dependencies
 
@@ -43,8 +58,8 @@ bundle install
 |---|---|
 | `bundle exec fastlane build_sdk` | Build OryAuth & OryUI (Swift Package) |
 | `bundle exec fastlane test_sdk` | Run SDK unit tests |
-| `bundle exec fastlane build_app` | Build the Example App |
-| `bundle exec fastlane test_app` | Run Example App unit tests |
+| `bundle exec fastlane build_example_app` | Build the Example App |
+| `bundle exec fastlane test_example_app` | Run Example App unit tests |
 | `bundle exec fastlane build_all` | Build everything (SDK + App) |
 | `bundle exec fastlane test_all` | Run all tests (SDK + App) |
 | `bundle exec fastlane coverage_sdk` | Run SDK tests with code coverage report |
