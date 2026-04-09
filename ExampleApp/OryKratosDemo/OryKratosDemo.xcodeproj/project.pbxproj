@@ -208,7 +208,7 @@
 			mainGroup = 09B0AD6F2F740B6C007E21FF;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../../../kratos-auth-swift-demo" */,
+				090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../.." */,
 				095468F72F758E9C00981ACC /* XCRemoteSwiftPackageReference "FlowStacks" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -596,9 +596,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../../../kratos-auth-swift-demo" */ = {
+		090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../.." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../kratos-auth-swift-demo";
+			relativePath = "../..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
