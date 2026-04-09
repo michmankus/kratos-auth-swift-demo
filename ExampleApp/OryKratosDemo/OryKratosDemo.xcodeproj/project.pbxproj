@@ -1,0 +1,633 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		090733A92F74980300D03D19 /* OryAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 090733A82F74980300D03D19 /* OryAuth */; };
+		090733B02F74980300D03D19 /* OryUI in Frameworks */ = {isa = PBXBuildFile; productRef = 090733AF2F74980300D03D19 /* OryUI */; };
+		095468F92F758E9C00981ACC /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 095468F82F758E9C00981ACC /* FlowStacks */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		09B0AD862F740B6E007E21FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 09B0AD702F740B6C007E21FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 09B0AD772F740B6C007E21FF;
+			remoteInfo = OryKratosDemo;
+		};
+		09B0AD902F740B6E007E21FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 09B0AD702F740B6C007E21FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 09B0AD772F740B6C007E21FF;
+			remoteInfo = OryKratosDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		09B0AD782F740B6C007E21FF /* OryKratosDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OryKratosDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		09B0AD852F740B6E007E21FF /* OryKratosDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OryKratosDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		09B0AD8F2F740B6E007E21FF /* OryKratosDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OryKratosDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		09B0AD7A2F740B6C007E21FF /* OryKratosDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OryKratosDemo;
+			sourceTree = "<group>";
+		};
+		09B0AD882F740B6E007E21FF /* OryKratosDemoTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OryKratosDemoTests;
+			sourceTree = "<group>";
+		};
+		09B0AD922F740B6E007E21FF /* OryKratosDemoUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OryKratosDemoUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		09B0AD752F740B6C007E21FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				090733A92F74980300D03D19 /* OryAuth in Frameworks */,
+				090733B02F74980300D03D19 /* OryUI in Frameworks */,
+				095468F92F758E9C00981ACC /* FlowStacks in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD822F740B6E007E21FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD8C2F740B6E007E21FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09B0AD6F2F740B6C007E21FF = {
+			isa = PBXGroup;
+			children = (
+				09B0AD7A2F740B6C007E21FF /* OryKratosDemo */,
+				09B0AD882F740B6E007E21FF /* OryKratosDemoTests */,
+				09B0AD922F740B6E007E21FF /* OryKratosDemoUITests */,
+				09B0AD792F740B6C007E21FF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		09B0AD792F740B6C007E21FF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				09B0AD782F740B6C007E21FF /* OryKratosDemo.app */,
+				09B0AD852F740B6E007E21FF /* OryKratosDemoTests.xctest */,
+				09B0AD8F2F740B6E007E21FF /* OryKratosDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		09B0AD772F740B6C007E21FF /* OryKratosDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09B0AD992F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemo" */;
+			buildPhases = (
+				09B0AD742F740B6C007E21FF /* Sources */,
+				09B0AD752F740B6C007E21FF /* Frameworks */,
+				09B0AD762F740B6C007E21FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				09B0AD7A2F740B6C007E21FF /* OryKratosDemo */,
+			);
+			name = OryKratosDemo;
+			packageProductDependencies = (
+				090733A82F74980300D03D19 /* OryAuth */,
+				090733AF2F74980300D03D19 /* OryUI */,
+				095468F82F758E9C00981ACC /* FlowStacks */,
+			);
+			productName = OryKratosDemo;
+			productReference = 09B0AD782F740B6C007E21FF /* OryKratosDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		09B0AD842F740B6E007E21FF /* OryKratosDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09B0AD9C2F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemoTests" */;
+			buildPhases = (
+				09B0AD812F740B6E007E21FF /* Sources */,
+				09B0AD822F740B6E007E21FF /* Frameworks */,
+				09B0AD832F740B6E007E21FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				09B0AD872F740B6E007E21FF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				09B0AD882F740B6E007E21FF /* OryKratosDemoTests */,
+			);
+			name = OryKratosDemoTests;
+			packageProductDependencies = (
+			);
+			productName = OryKratosDemoTests;
+			productReference = 09B0AD852F740B6E007E21FF /* OryKratosDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		09B0AD8E2F740B6E007E21FF /* OryKratosDemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09B0AD9F2F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemoUITests" */;
+			buildPhases = (
+				09B0AD8B2F740B6E007E21FF /* Sources */,
+				09B0AD8C2F740B6E007E21FF /* Frameworks */,
+				09B0AD8D2F740B6E007E21FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				09B0AD912F740B6E007E21FF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				09B0AD922F740B6E007E21FF /* OryKratosDemoUITests */,
+			);
+			name = OryKratosDemoUITests;
+			packageProductDependencies = (
+			);
+			productName = OryKratosDemoUITests;
+			productReference = 09B0AD8F2F740B6E007E21FF /* OryKratosDemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		09B0AD702F740B6C007E21FF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					09B0AD772F740B6C007E21FF = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					09B0AD842F740B6E007E21FF = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 09B0AD772F740B6C007E21FF;
+					};
+					09B0AD8E2F740B6E007E21FF = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 09B0AD772F740B6C007E21FF;
+					};
+				};
+			};
+			buildConfigurationList = 09B0AD732F740B6C007E21FF /* Build configuration list for PBXProject "OryKratosDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 09B0AD6F2F740B6C007E21FF;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../../../kratos-auth-swift-demo" */,
+				095468F72F758E9C00981ACC /* XCRemoteSwiftPackageReference "FlowStacks" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 09B0AD792F740B6C007E21FF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				09B0AD772F740B6C007E21FF /* OryKratosDemo */,
+				09B0AD842F740B6E007E21FF /* OryKratosDemoTests */,
+				09B0AD8E2F740B6E007E21FF /* OryKratosDemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		09B0AD762F740B6C007E21FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD832F740B6E007E21FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD8D2F740B6E007E21FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		09B0AD742F740B6C007E21FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD812F740B6E007E21FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09B0AD8B2F740B6E007E21FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		09B0AD872F740B6E007E21FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 09B0AD772F740B6C007E21FF /* OryKratosDemo */;
+			targetProxy = 09B0AD862F740B6E007E21FF /* PBXContainerItemProxy */;
+		};
+		09B0AD912F740B6E007E21FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 09B0AD772F740B6C007E21FF /* OryKratosDemo */;
+			targetProxy = 09B0AD902F740B6E007E21FF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		09B0AD972F740B6E007E21FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		09B0AD982F740B6E007E21FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		09B0AD9A2F740B6E007E21FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		09B0AD9B2F740B6E007E21FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		09B0AD9D2F740B6E007E21FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OryKratosDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OryKratosDemo";
+			};
+			name = Debug;
+		};
+		09B0AD9E2F740B6E007E21FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OryKratosDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OryKratosDemo";
+			};
+			name = Release;
+		};
+		09B0ADA02F740B6E007E21FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OryKratosDemo;
+			};
+			name = Debug;
+		};
+		09B0ADA12F740B6E007E21FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8XXGMDE9L8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = orydemo.OryKratosDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OryKratosDemo;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		09B0AD732F740B6C007E21FF /* Build configuration list for PBXProject "OryKratosDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09B0AD972F740B6E007E21FF /* Debug */,
+				09B0AD982F740B6E007E21FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09B0AD992F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09B0AD9A2F740B6E007E21FF /* Debug */,
+				09B0AD9B2F740B6E007E21FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09B0AD9C2F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09B0AD9D2F740B6E007E21FF /* Debug */,
+				09B0AD9E2F740B6E007E21FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09B0AD9F2F740B6E007E21FF /* Build configuration list for PBXNativeTarget "OryKratosDemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09B0ADA02F740B6E007E21FF /* Debug */,
+				09B0ADA12F740B6E007E21FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		090733A72F74980300D03D19 /* XCLocalSwiftPackageReference "../../../kratos-auth-swift-demo" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../kratos-auth-swift-demo";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		095468F72F758E9C00981ACC /* XCRemoteSwiftPackageReference "FlowStacks" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/johnpatrickmorgan/FlowStacks.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.10.12;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		090733A82F74980300D03D19 /* OryAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OryAuth;
+		};
+		090733AF2F74980300D03D19 /* OryUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OryUI;
+		};
+		095468F82F758E9C00981ACC /* FlowStacks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 095468F72F758E9C00981ACC /* XCRemoteSwiftPackageReference "FlowStacks" */;
+			productName = FlowStacks;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 09B0AD702F740B6C007E21FF /* Project object */;
+}
