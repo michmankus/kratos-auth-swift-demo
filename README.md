@@ -38,6 +38,8 @@ NOTE: You can't have SDK project open in Xcode and ExampleApp at the same time, 
 
 You can also run in the console `open ExampleApp/OryKratosDemo/OryKratosDemo.xcodeproj`
 
+**NOTE: Don't open Demo App & SDK Package at the same time, it will cause Xcode to have issues with resolving package dependencies and errors.**
+
 ### SDK
 
 Open the XCode, then click File > Open > root folder of the repository > Click Open. This should open the SDK Swift Package itself in XCode and load dependencies.
