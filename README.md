@@ -27,7 +27,7 @@ https://github.com/user-attachments/assets/7e05f36f-356c-4969-865d-98cb0d372bdd
 - Xcode 16+
 - iOS 16+ / macOS 13+
 - Swift 6
-- Ruby (for Fastlane)
+- Ruby 3.1.2 (for Fastlane)
 
 ## Quick Start [XCode]
 
@@ -45,6 +45,8 @@ Open the XCode, then click File > Open > root folder of the repository > Click O
 If you have xcode tools installed, you can also run in the console `xed .`
 
 ## Quick Start [Console]
+
+You don't need to do any of this, for checking out the Demo App and SDK the steps above in XCode are enought. Console commands are built for CI & CD purpose, they require to run on the same environment as the dev team (macOS, XCode version, simulators, Ruby version).
 
 ### 1. Install dependencies
 
